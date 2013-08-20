@@ -7,7 +7,7 @@ var winB = 0;
 for (var x=0;x<iterations;x++) {
 	var a = new Object();
 	a.name = "orks";
-	a.Models = 20;
+	a.Models = 12;
 	a.Shots = 2;
 	a.Range = 18;
 	a.Armor = 6;
@@ -25,13 +25,13 @@ for (var x=0;x<iterations;x++) {
 	
 	var d = new Object();
 	d.name = "space marines";
-	d.Models = 10;
+	d.Models = 8;
 	d.Shots = 1;
 	d.Range = 36;
 	d.Armor = 3;
 	d.BS = 4;
 	d.TOU = 4;
-	d.Cover = 4;
+	d.Cover = 0;
 	d.LD = 8;
 	d.Mob = false;
 	
