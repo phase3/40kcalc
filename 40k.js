@@ -13,6 +13,10 @@ for (var x=0;x<iterations;x++) {
 	a.armor = 6;
 	a.bs = 4;
 	a.tou = 4;
+	a.attacks = 2;
+	a.ws = 4;
+	a.ini = 2;
+	a.engaged = false;
 	a.cover = 0;
 	a.ld = 7;
 	a.mob = true;
@@ -32,6 +36,10 @@ for (var x=0;x<iterations;x++) {
 	b.armor = 3;
 	b.bs = 4;
 	b.tou = 4;
+	b.attacks = 2;
+	b.ws = 4;
+	b.ini = 4;
+	b.engaged = false;
 	b.cover = 0;
 	b.ld = 8;
 	b.mob = false;
@@ -205,4 +213,16 @@ function rollCoverSave (sv) {
 	//console.log("         " + (r >=sv?"SAVE":"FAIL") + "  Cover Save D6:" + r + " against " + sv + "+ cover save");
 	return (r >= sv);
 }
-
+function resolveCloseCombat(att, def) {
+	// bonuses: +1 1st to assault, +1 two weapons
+	// resolve initiative order
+	// roll to hit: = ws  	4+
+	//				> ws*2 	5+
+	//				< ws	3+
+	// wound = str vs tou
+	// declare save against armor
+	// count casualties, greatest loser rolls morale
+	// sweeping advances if no other engaged units
+	// if no more close combat, allow move 6" (consolidation move)
+	
+}
