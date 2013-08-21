@@ -7,61 +7,62 @@ var winB = 0;
 for (var x=0;x<iterations;x++) {
 	var a = new Object();
 	a.name = "orks";
-	a.Models = 20;
-	a.Shots = 2;
-	a.Range = 18;
-	a.Armor = 6;
-	a.BS = 4;
-	a.TOU = 4;
-	a.Cover = 0;
-	a.LD = 7;
-	a.Mob = true;
+	a.models = 10;
+	a.shots = 2;
+	a.range = 18;
+	a.armor = 6;
+	a.bs = 4;
+	a.tou = 4;
+	a.cover = 0;
+	a.ld = 7;
+	a.mob = true;
 	a.broken = false;
-	
-	a.STR = 4;
-	a.AP = 6;
+	a.str = 4;
+	a.ap = 6;
+	a.stats = new Object();
 	
 	var distance = 31;
 	var movement = 6;
 	
 	var b = new Object();
 	b.name = "space marines";
-	b.Models = 9;
-	b.Shots = 1;
-	b.Range = 36;
-	b.Armor = 3;
-	b.BS = 4;
-	b.TOU = 4;
-	b.Cover = 4;
-	b.LD = 8;
-	b.Mob = false;
+	b.models = 5;
+	b.shots = 1;
+	b.range = 36;
+	b.armor = 3;
+	b.bs = 4;
+	b.tou = 4;
+	b.cover = 0;
+	b.ld = 8;
+	b.mob = false;
 	b.broken = false;
-
-	b.STR = 4;
-	b.AP = 5;
+	b.str = 4;
+	b.ap = 5;
+	b.stats = new Object();
 	
-	while(a.Models > 0 && b.Models > 0) {
+	while(a.models > 0 && b.models > 0) {
 		resolveRound(a,b);
-		if (b.Models <=0) {
+		if (b.models <=0) {
 			break;
 		}
 		resolveRound(b,a);
-		if (a.Models <=0) {
+		if (a.models <=0) {
 			break;
 		}
 	}
 	stats(a);
 	stats(b);
-	if (a.Models > 0) winA++;
-	if (b.Models > 0) winB++;
+	if (a.models > 0) winA++;
+	if (b.models > 0) winB++;
 }
 console.log("TOTALS:");
 console.log(a.name + ": " + winA);
 console.log(b.name + ": " + winB);
 
 function resolveRound(att, def) {
+	console.log("*** " + att.name + " turn ***");
 	if (att.broken) {
-		if (resolveMorale(att.Models, att)) {
+		if (resolveMorale(att.models, att)) {
 			// unit broken, falling back
 			att.broken = true;
 			distance += 6;
@@ -72,14 +73,14 @@ function resolveRound(att, def) {
 		}
 		return;
 	} else {
-		var startTotal = def.Models;
+		var startTotal = def.models;
 		resolveMove(att);
 		resolveShootingRound(att,def);
-		if (def.Models <=0) {
+		if (def.models <=0) {
 			return;
 		}
 		
-		if ((100*def.Models) / startTotal <= 75) {
+		if ((100*def.models) / startTotal <= 75) {
 			if (resolveMorale(startTotal, def)) {
 				// unit broken, falling back
 				def.broken = true;
@@ -93,18 +94,18 @@ function resolveRound(att, def) {
 
 function resolveMorale(start, unit) {
 	console.log("resolving Morale Check for "+ unit.name);
-	if (unit.Mob) {
-		if (unit.Models >=12) {
+	if (unit.mob) {
+		if (unit.models >=12) {
 			return false;
 		}
 	}
 	var r = d6() + d6();
-	console.log("   Morale " + (r > unit.LD?"failed":"safe") + ": roll=" + r);
-	return (r > unit.LD) ;
+	console.log("   Morale " + (r > unit.ld?"failed":"safe") + ": roll=" + r);
+	return (r > unit.ld) ;
 }
 function resolveMove(unit) {
 	console.log("resolving Move Round for "+ unit.name);
-	if (unit.Cover >0) {
+	if (unit.cover >0) {
 		console.log("   No movement, unit in cover");
 		return;
 	}
@@ -119,24 +120,23 @@ function resolveMove(unit) {
 		x=6;
 		distance -= 6;
 	}
-	console.log("   moving "+ unit.Models + " " + unit.name + " "+ x + "\" closer. Distance now: " + distance);
+	console.log("   moving "+ unit.models + " " + unit.name + " "+ x + "\" closer. Distance now: " + distance);
 }
 
 function stats(o) {
-	console.log("name:   "+ o.name);
-	console.log("models: "+ o.Models);
+	console.log("name:   "+ o.name + ", models: "+ o.models);
 }
 function resolveShootingRound(attacker, defender) {
 	console.log("resolving Shooting Round for "+ attacker.name);
-	if (distance > attacker.Range) {
+	if (distance > attacker.range) {
 		console.log ("   No shooting, out of range");
 		return;
 	}
 	var hits= 0;
 	// roll attacker
 	var bsRolls = "";
-	for(var x=0;x<(attacker.Models*attacker.Shots);x++) {
-		if (rollBS(attacker.BS)) {
+	for(var x=0;x<(attacker.models*attacker.shots);x++) {
+		if (rollBS(attacker.bs)) {
 			hits++;
 		}
 		bsRolls += lastD6 + ":";
@@ -144,26 +144,26 @@ function resolveShootingRound(attacker, defender) {
 	var woundHits = 0;
 	var wRolls = "";
 	for(var x=0;x<hits;x++) {
-		if (rollWound(attacker.STR, defender.TOU)) {
+		if (rollWound(attacker.str, defender.tou)) {
 			woundHits++;
 		}
 		wRolls += lastD6 + ":";
 		
 	}
-	console.log("   " + attacker.Models + " "+ attacker.name + " got "+ hits + " hits (" + bsRolls + ") and scored " + woundHits + " potential wounds (" + wRolls + ")");
+	console.log("   " + attacker.models + " "+ attacker.name + " got "+ hits + " hits (" + bsRolls + ") and scored " + woundHits + " potential wounds (" + wRolls + ")");
 	
 	// roll defender
 	var wounds = 0;
 	for (var x=0;x<woundHits;x++) {
-		if (!rollSave(defender.Armor, attacker.AP)) {
-			if (defender.Cover <= 0 ||  !rollCoverSave(defender.Cover)) {
+		if (!rollSave(defender.armor, attacker.ap)) {
+			if (defender.cover <= 0 ||  !rollCoverSave(defender.cover)) {
 				wounds++;
 			}
 		}
 	}
-	console.log("   " + defender.Models + " "+ defender.name + " took "+ wounds + " wounds");
-	defender.Models -= wounds;
-	if (defender.Models < 0) defender.Models = 0;
+	console.log("   " + defender.models + " "+ defender.name + " took "+ wounds + " wounds");
+	defender.models -= wounds;
+	if (defender.models < 0) defender.models = 0;
 
 }
 
